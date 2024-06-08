@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>faser.app</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: rgba(255, 255, 255, 0.71);
+            background-image: url("background");
+            background-repeat: no-repeat;
+            background-position: 0%;
+            background-size: cover;
+            height: 100svh;
+            width: 100%;
+            transition: all 2s cubic-bezier(.24,.01,.07,1.02);
+        }
+
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            transition: all 2s cubic-bezier(.24,.01,.07,1.02);
+            opacity: 0;
+            font-size: 150%;
+        }
+
+        a {
+            color: azure;
+        }
+
+        #footer {
+            position: absolute;
+            width: 100svw;
+            bottom: 0;
+            color: azure;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+    <h1>Welcome to faser.app</h1>
+    <p>Coming soon...</p>
+</div>
+
+<div id="footer">
+    <p>Follow us on <a href="https://x.com/faser_app" target="_blank">Twitter</a> or <a
+            href="https://instagram.com/faser.app" target="_blank">Instagram</a></p>
+</div>
+
+<script>
+    setTimeout(() => {
+        document.getElementById("content").style.opacity = 1;
+    }, 1000)
+
+    setTimeout(() => {
+        document.body.style.backgroundPosition = "50%"
+        document.getElementById("content").style.left = "50%";
+    }, 1)
+</script>
+</body>
+</html>
