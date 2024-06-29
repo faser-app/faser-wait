@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register - faser.app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeBCwMqAAAAAIVjFefUV9b1LQYre0rJpoKPJpCk"></script>
+    <style>
+        body {
+            background: black;
+            color: white;
+            font-family: sans-serif;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        #content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        input {
+            background: #00000000;
+            border: solid 1px #222222;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            color: aliceblue;
+        }
+        #textBackground {
+            background-image: linear-gradient(45deg, #24c7ce, #1ed794);
+            background-size: 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #content {
+            transition: all 500ms ease;
+            opacity: 0;
+        }
+        button {
+            background: #000000;
+            border: solid 1px #222222;
+            color: #717171;
+            transition: all 500ms ease;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        button:hover, button:focus {
+            color: aliceblue;
+        }
+        #info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px #8b0000 solid;
+            background: #220000;
+            border-radius: 10px;
+            display: none;
+            color: #d8d8d8;
+        }
+        #otherText {
+            color: #b3b3b3;
+        }
+        #otherText a {
+            color: #dadada;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        #verifyEmail {
+            margin-left: 200px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 500ms ease;
+            opacity: 0;
+        }
+        #register {
+            margin-left: 0px;
+            transition: all 500ms ease;
+        }
+        #verifyEmailDefaultText {
+            color: #b3b3b3;
+        }
+
+        #header {
+            position: absolute;
+            top: 0;
+            left: 8px;
+            width: 100%;
+            text-align: left;
+        }
+
+        #header h2 {
+            background-image: linear-gradient(45deg, #24c7ce, #1ed794);
+            background-size: 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="header">
+    <h2 onclick="back()">faser.app</h2>
+</div>
+
+<div id="content">
+    <div id="textBackground">
+        <h1>Nice to see you!</h1>
+    </div>
+    <div id="register">
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="email" id="email" placeholder="E-Mail"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button id="registerButton">Register</button>
+    </div>
+    <div id="verifyEmail">
+        <p id="verifyEmailDefaultText">E-Mail sent to</p>
+        <p id="verifyEmailText"></p>
+        <input type="text" id="emailCode" placeholder="E-Mail Code"><br>
+        <button id="emailCodeButton">Verify</button>
+    </div>
+    <div id="info">
+        <p id="infoText">Sose</p>
+    </div>
+    <p id="otherText">Already have an account? <a id="loginButton">Login</a></p>
+</div>
+
+<script>
+    function onSubmit(token) {
+        const body = {
+            username: document.getElementById("username").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            lang: navigator.language || navigator.userLanguage,
+            recaptchaToken: token,
+        };
+
+        fetch("https://api.faser.app/api/account/createAccount", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.setItem("token", data.token);
+                    document.getElementById("register").style.marginLeft = "-200px";
+                    document.getElementById("register").style.opacity = "0";
+                    document.getElementById("verifyEmail").style.opacity = "1";
+                    document.getElementById("verifyEmail").style.marginLeft = "0px";
+                    document.getElementById("verifyEmailText").innerText = document.getElementById("email").value;
+                    return;
+                }
+                document.getElementById("info").style.display = "block";
+                document.getElementById("infoText").innerText = data.message;
+            });
+    }
+
+    document.getElementById("registerButton").addEventListener("click", function() {
+        grecaptcha.enterprise.execute('6LeBCwMqAAAAAIVjFefUV9b1LQYre0rJpoKPJpCk', {action: 'submit'}).then(function(token) {
+            onSubmit(token);
+        });
+    });
+
+    if (localStorage.getItem("token") !== undefined) {
+        fetch("https://api.faser.app/api/account/checkAccountState", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                token: localStorage.getItem("token"),
+                lang: navigator.language || navigator.userLanguage,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    window.location = "/account";
+                }
+            });
+    }
+
+    const hostname = window.location.host;
+
+    addEventListener("DOMContentLoaded", (event) => {
+        setTimeout(() => {
+            document.getElementById("content").style.opacity = "1";
+        }, 1);
+    });
+
+    document.getElementById("emailCodeButton").addEventListener("click", () => {
+        const body = {
+            email: document.getElementById("email").value,
+            token: localStorage.getItem("token"),
+            code: document.getElementById("emailCode").value,
+            lang: navigator.language || navigator.userLanguage,
+        };
+
+        fetch("https://api.faser.app/api/account/verifyEmail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    localStorage.setItem("token", data.token);
+                    document.getElementById("content").style.opacity = "0";
+                    window.location = "/account";
+                    return;
+                }
+                document.getElementById("info").style.display = "block";
+                document.getElementById("infoText").innerText = data.message;
+            });
+    });
+
+    document.getElementById("loginButton").addEventListener("click", () => {
+        document.getElementById("content").style.opacity = "0";
+        window.location = "/login";
+    });
+
+    function back() {
+        window.location = "/"
+    }
+</script>
+</body>
+</html>

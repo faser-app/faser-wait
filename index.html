@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>faser.app</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +20,8 @@
             background-size: cover;
             height: 100svh;
             width: 100%;
-            transition: all 2s cubic-bezier(.24,.01,.07,1.02);
+            transition: all 2s cubic-bezier(.24, .01, .07, 1.02);
+            bottom: 0svh;
         }
 
         #content {
@@ -26,7 +29,7 @@
             top: 50%;
             left: 100%;
             transform: translate(-50%, -50%);
-            transition: all 2s cubic-bezier(.24,.01,.07,1.02);
+            transition: all 2s cubic-bezier(.24, .01, .07, 1.02);
             opacity: 0;
             font-size: 150%;
         }
@@ -41,12 +44,35 @@
             bottom: 0;
             color: azure;
         }
+
+        #accountButton {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 20px;
+            padding-top: 18px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #24c7ce, #1ed794);
+            color: rgba(255, 255, 255, 0.71);
+            border: 0;
+            cursor: pointer;
+        }
+
+        #accountButton svg {
+            transform: translateY(3px);
+        }
     </style>
 </head>
 <body>
+
+<button id="accountButton"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+</svg> <span class="text"> Account</span></button>
+
 <div id="content">
     <h1>Welcome to faser</h1>
-    <p>Coming soon...</p>
+    <p>Register now for closed beta</p>
 </div>
 
 <div id="footer">
@@ -64,6 +90,18 @@
         document.body.style.backgroundPosition = "50%"
         document.getElementById("content").style.left = "50%";
     }, 1)
+
+    document.getElementById("accountButton").addEventListener("click", () => {
+        document.querySelector("body").style.transition = "all 1s cubic-bezier(.24, .01, .07, 1.02)"
+
+        document.querySelector("body").style.transform = "translateY(-100svh)"
+        document.body.style.backgroundPositionY = "-100svh"
+        document.body.style.opacity = "0"
+
+        setTimeout(() => {
+            window.location = "/account"
+        }, 1000)
+    })
 </script>
 </body>
 </html>
